@@ -1,0 +1,19 @@
+{
+  "data": [
+    {
+      "personId": 0,
+      "email": "bruno@gmail.com",
+      "password": "teste123"
+    },
+    {
+      "personId": 1,
+      "email": "mariana@teste",
+      "password": "teste"
+    },
+    {
+      "personId": 2,
+      "email": "juceli@teste",
+      "password": "teste"
+    }
+  ]
+}

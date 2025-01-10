@@ -17,8 +17,7 @@
                 <v-list-item
                     v-bind="props"
                     :prepend-avatar="item.raw.avatar"
-                    :title="item.raw.title"
-                    :subtitle="item.raw.subtitle"
+                    :subtitle="item.raw.description"
                 >
                 </v-list-item>
                 </template>
@@ -26,7 +25,6 @@
                 <v-avatar>
                     <v-img :src="item.raw.avatar"></v-img>
                 </v-avatar>
-                <p>{{ item.raw.title }}</p>
                 </template>
             </v-select>
         </div>
@@ -122,9 +120,9 @@ const emit = defineEmits(['onSelectAppointment'])
 
 const today: Ref<string> = ref(new Date(new Date().setUTCHours(0,0,0,0)).toISOString())
 const professionalSelected: Ref<Professional> = ref({
+  personId: 0,
   avatar: "",
-  title: "",
-  subtitle: ""
+  description: ""
 })
 const dateSelected: Ref<Date|undefined> = ref();
 const hourSelected: Ref<string> = ref("")
@@ -151,24 +149,24 @@ const hours = ref([
 
 const professionals: Ref<Professional[]> = ref([
   {
+    personId: 1,
     avatar: 'https://static.vecteezy.com/system/resources/previews/038/974/578/non_2x/ai-generated-professional-portrait-of-a-competent-woman-free-photo.jpg',
-    title: 'Natalia',
-    subtitle: 'Depilação, sobrancelha'
+    description: 'Depilação, sobrancelha'
   },
   {
+    personId: 2,
     avatar: 'https://t3.ftcdn.net/jpg/01/91/85/06/360_F_191850653_IkzN9vZTtOtJ8NTKLKOp8PlaY8iCk6Ls.jpg',
-    title: 'Andrea',
-    subtitle: 'Massagem'
+    description: 'Massagem'
   },
   {
+    personId: 3,
     avatar: 'https://t4.ftcdn.net/jpg/08/37/17/45/360_F_837174504_73yzX2fi79OrRg9pfC2VQAPkXT3Zwv7K.jpg',
-    title: 'Fernanda',
-    subtitle: 'Hidratação do Cabelo'
+    description: 'Hidratação do Cabelo'
   },
   {
+    personId: 4,
     avatar: 'https://img.freepik.com/free-photo/confident-cheerful-young-businesswoman_1262-20881.jpg',
-    title: 'Ludmila',
-    subtitle: 'Depilação Íntima'
+    description: 'Depilação Íntima'
   }
 ])
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <p v-if="appointment.date" class="text-subtitle-2 mb-4 d-flex justify-space-between" >
+      <div v-if="appointment.date" class="text-subtitle-2 mb-4 d-flex justify-space-between" >
         <div>
           <span class="font-weight-bold" >Agendados</span>
           <div class="ml-4" >
@@ -19,7 +19,7 @@
           icon="mdi-arrow-right"
         >
         </v-btn>
-      </p>
+      </div>
       <v-divider class="border-opacity-50"></v-divider>
       <p class="text-subtitle-2 my-4 font-weight-bold" >
         Para agendar

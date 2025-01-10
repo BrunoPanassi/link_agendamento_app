@@ -1,5 +1,7 @@
 export interface Professional {
+    personId: number,
     avatar: string,
-    title: string,
-    subtitle: string
+    description: string,
+    servicesId?: [number],
+    sallonId?: number
 }

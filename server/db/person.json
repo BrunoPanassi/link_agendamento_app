@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "name": "Bruno",
+      "phoneNumber": "180901909",
+      "roles": "ADMIN",
+      "id": 0
+    },
+    {
+      "name": "Mariana",
+      "phoneNumber": "123123",
+      "roles": "ADMIN",
+      "id": 1
+    },
+    {
+      "name": "Jucelino",
+      "phoneNumber": "515151",
+      "roles": "ADMIN",
+      "id": 2
+    }
+  ]
+}
