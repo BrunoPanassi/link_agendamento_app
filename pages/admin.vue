@@ -12,15 +12,9 @@
         ></v-text-field>
 
         <v-text-field
+            bg-color="light-green-lighten-4"
             label="E-mail"
             v-model="email"
-            :rules="required"
-        ></v-text-field>
-
-        <v-text-field
-            bg-color="light-green-lighten-4"
-            label="Telefone"
-            v-model="phoneNumber"
             :rules="required"
         ></v-text-field>
 
@@ -33,15 +27,21 @@
         ></v-text-field>
 
         <v-text-field
+            label="Telefone"
+            v-model="phoneNumber"
+            :rules="required"
+        ></v-text-field>
+
+        <v-text-field
             label="Confirmar senha"
             :disabled="!password"
             type="password"
             v-model="confirmPassword"
+            :error-messages="confirmPasswordErrorMessages"
         ></v-text-field>
 
         <p class="text-caption">* Para logar é necessário somente o telefone e senha.</p>
-
-        <v-btn class="mt-2" color="light-green" type="submit" block @click="login">Logar</v-btn>
+        <v-btn class="mt-2" color="light-green" block @click="login">Logar</v-btn>
         <v-btn class="mt-2" type="submit" variant="outlined" color="cyan-darken-4" block @click="register">Cadastrar</v-btn>
         
         </v-form>
@@ -49,12 +49,17 @@
 </template>
 
 <script setup lang="ts">
-import { saveAdmin } from '~/services/adminManager'
+import admin from '~/server/api/admin';
+import { getAdmin, saveAdmin } from '~/services/adminManager'
 import { savePerson } from '~/services/personManager';
 import type { Person } from "~/types/person";
+import { useRouter } from "vue-router"
 import { Role } from '~/types/role';
 
 const form = ref()
+const router = useRouter()
+
+const AUTH_INFO = '0312813' // TODO: Save as enviroment variable
 
 let name: Ref<string> = ref("")
 let required =  [
@@ -75,9 +80,19 @@ const checkPassword = (confirmPassword: string) => {
     return confirmPasswordErrorMessages.value.push("Senha não confere com a informada")
 }
 
+const pushToDashboardAndAuthSession = (authInfo: string) => {
+    sessionStorage.setItem('auth', authInfo)
+    router.push('/dashboard')
+}
 
-const login = () => {
 
+const login = async () => {
+    if (email.value && password.value) {
+        const adminData = await getAdmin(email.value, password.value)
+        if (adminData && adminData.success) {
+            pushToDashboardAndAuthSession(AUTH_INFO)
+        }
+    }
 }
 
 const register = async () => {
@@ -86,8 +101,10 @@ const register = async () => {
     if (checkPassword(confirmPassword.value) && valid) {
         try {
             let newPerson = await savePerson(name.value, phoneNumber.value, Role.admin);
-            if (newPerson)
-                saveAdmin(newPerson.id, email.value, password.value)
+            if (newPerson) {
+                pushToDashboardAndAuthSession(AUTH_INFO)
+                await saveAdmin(newPerson.id, email.value, password.value)
+            }
         } catch (e) {
             let message = "Erro no pŕocesso ao salvar uma pessoa"
             if (e instanceof Error)

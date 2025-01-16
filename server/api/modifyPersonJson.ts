@@ -26,6 +26,11 @@ const loadJsonIfPhoneNumberDoNotExists = (phoneNumber: number) => {
   return personData
 }
 
+const loadJsonByPhoneNumber = (phoneNumber: number) => {
+  const personData = loadJson();
+  return personData.data.find((person) => person.phoneNumber == phoneNumber)
+}
+
 const getLastId = () => {
   const personData = loadJson()
   if (personData.data.length) {
@@ -46,8 +51,12 @@ export default defineEventHandler(async (event) => {
 
   switch (method) {
     case 'GET': {
-      const jsonData = loadJson();
-      return { success: true, data: jsonData.data };
+      const query = getQuery(event)
+      const phoneNumber = query.phoneNumber as number
+      const jsonData = loadJsonByPhoneNumber(phoneNumber)
+      if (jsonData)
+        return { status: 200, success: true, data: {phoneNumber, id: jsonData.id}, message: null };
+      return { status: 400, success: false, data: null, message: "Usuário não encontrado"} //TODO: Improve status code response to 400
     }
 
     case 'POST': {

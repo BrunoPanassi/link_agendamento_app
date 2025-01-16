@@ -2,6 +2,7 @@ import { defineEventHandler, readBody } from 'h3';
 import fs from 'fs';
 import path from 'path';
 import { Admin } from '~/types/admin';
+import { json } from 'stream/consumers';
 
 interface JsonData {
   data: Admin[];
@@ -26,6 +27,11 @@ const loadJsonIfEmailDoNotExists = (email: string) => {
     return adminData
   }
 
+const loadJsonIfEmailAndPasswordChecks = (email: string, password: string) => {
+  const adminData = loadJson();
+  return adminData.data.find(a => a.email == email && a.password == password)
+}
+
 // Função para salvar o JSON
 const saveJson = (data: JsonData) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
@@ -34,11 +40,16 @@ const saveJson = (data: JsonData) => {
 // Define a API para adicionar dados ao JSON
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method
-
+  
   switch (method) {
     case 'GET': {
-      const jsonData = loadJson();
-      return { success: true, data: jsonData.data };
+      const query = getQuery(event)
+      const email = query.email as string
+      const password = query.password as string
+      const jsonData = loadJsonIfEmailAndPasswordChecks(email, password);
+      if (jsonData)
+        return { status: 200, success: true, data: email, message: null };
+      return { status: 400, success: false, data: null, message: "Usuário não encontrado"}
     }
 
     case 'POST': {
