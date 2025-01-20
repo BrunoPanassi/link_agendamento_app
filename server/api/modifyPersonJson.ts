@@ -11,7 +11,7 @@ interface JsonData {
 const filePath = path.join(process.cwd(), 'server/db/person.json');
 
 // Função para carregar o JSON
-const loadJson = (): JsonData => {
+const loadPersonData = (): JsonData => {
   if (!fs.existsSync(filePath)) {
     throw new Error('Arquivo JSON não encontrado');
   }
@@ -20,19 +20,19 @@ const loadJson = (): JsonData => {
 };
 
 const loadJsonIfPhoneNumberDoNotExists = (phoneNumber: number) => {
-  const personData = loadJson();
+  const personData = loadPersonData();
   if (personData.data.some((person) => person.phoneNumber == phoneNumber))
     return null
   return personData
 }
 
 const loadJsonByPhoneNumber = (phoneNumber: number) => {
-  const personData = loadJson();
+  const personData = loadPersonData();
   return personData.data.find((person) => person.phoneNumber == phoneNumber)
 }
 
 const getLastId = () => {
-  const personData = loadJson()
+  const personData = loadPersonData()
   if (personData.data.length) {
     const lastId = personData.data[personData.data.length - 1].id
     return lastId + 1

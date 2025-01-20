@@ -17,6 +17,12 @@
       "phoneNumber": "515151",
       "roles": "ADMIN",
       "id": 2
+    },
+    {
+      "name": "Profissional",
+      "phoneNumber": "3123123",
+      "roles": "PROFESSIONAL",
+      "id": 3
     }
   ]
 }

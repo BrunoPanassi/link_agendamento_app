@@ -2,7 +2,6 @@ import { defineEventHandler, readBody } from 'h3';
 import fs from 'fs';
 import path from 'path';
 import { Admin } from '~/types/admin';
-import { json } from 'stream/consumers';
 
 interface JsonData {
   data: Admin[];
