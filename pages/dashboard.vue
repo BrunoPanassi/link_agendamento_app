@@ -42,6 +42,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    middleware: 'auth'
+})
 import services from '~/components/dashboard/services.vue';
 import sallon from '~/components/dashboard/sallon.vue';
 

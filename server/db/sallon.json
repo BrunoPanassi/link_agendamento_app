@@ -1,3 +1,10 @@
 {
-    "data": []
+  "data": [
+    {
+      "name": "Stética e Beleza",
+      "description": "Salão da Sté",
+      "address": "Avenida Saudade, 550",
+      "city": ""
+    }
+  ]
 }

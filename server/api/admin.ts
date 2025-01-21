@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
       const password = query.password as string
       const jsonData = loadJsonIfEmailAndPasswordChecks(email, password);
       if (jsonData)
-        return { status: 200, success: true, data: email, message: null };
+        return { status: 200, success: true, data: jsonData, message: null };
       return { status: 400, success: false, data: null, message: "Usuário não encontrado"}
     }
 

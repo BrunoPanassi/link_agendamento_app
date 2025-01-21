@@ -3,7 +3,6 @@ import type { Response } from "~/types/response";
 
 const URI: string = '/api/admin';
 
-
 const saveAdmin = async (personId: number, email: string, password: string) => {
     try {
         const response: Response  = await $fetch(URI, {

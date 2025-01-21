@@ -44,6 +44,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    middleware: 'auth'
+})
 import { getPerson, savePerson } from '~/services/personManager'
 import { getProfessional, saveProfessional } from '~/services/professionalManager'
 import { Role } from '~/types/role'
@@ -51,7 +54,7 @@ import { Role } from '~/types/role'
 const form = ref()
 const router = useRouter()
 
-const AUTH_INFO = '0312813'
+const AUTH_INFO = '0312813' // TODO: Save as enviroment variable
 
 let required =  [
     (value:string|number) => {
@@ -66,8 +69,8 @@ let password: Ref<string> = ref("")
 let confirmPassword: Ref<string> = ref("")
 let confirmPasswordErrorMessages: Ref<string[]> = ref([])
 
-const pushToDashboardAndAuthSession = (authInfo: string) => {
-    sessionStorage.setItem('auth', authInfo)
+const pushToDashboardAndAuthSession = (authInfo: string, personId: number) => {
+    sessionStorage.setItem('auth', JSON.stringify({ authInfo, personId }))
     router.push('/dashboard')
 }
 
@@ -85,7 +88,7 @@ const login = async () => {
         if (person?.data?.id) {
             const professionalData = await getProfessional(person.data.id, password.value)
             if (professionalData?.data?.personId) {
-                pushToDashboardAndAuthSession(AUTH_INFO)
+                pushToDashboardAndAuthSession(AUTH_INFO, person.data.id)
             }
             if (professionalData?.message)
                 console.error(professionalData.message)
@@ -101,7 +104,7 @@ const register = async () => {
         try {
             let newPerson = await savePerson(name.value, phoneNumber.value, Role.professional);
             if (newPerson) {
-                pushToDashboardAndAuthSession(AUTH_INFO)
+                pushToDashboardAndAuthSession(AUTH_INFO, newPerson.id)
                 await saveProfessional({
                     personId: newPerson.id, 
                     password: password.value
