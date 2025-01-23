@@ -66,6 +66,8 @@
 
 <script setup lang="ts">
 import { saveSallon } from '~/services/sallonManager'
+import { useAuth } from '#build/imports'
+import { getSallonByPersonId } from '~/services/sallonManager'
 
 const headers = ref([
     { title: 'Nome', value: 'name' },
@@ -73,13 +75,19 @@ const headers = ref([
     { title: 'Ações', value: 'actions' }
 ])
 
-const items = ref([])
+const items = ref()
 
 const newSallonDialog = ref(false)
 const name = ref("")
 const description = ref("")
 const address = ref("")
 const city = ref("")
+
+onMounted(async () => {
+    const { userId } = useAuth()
+    const sallon = await getSallonByPersonId(Number(userId.value));
+    items.value = sallon?.data
+})
 
 let required =  [
     (value:string|number) => {
