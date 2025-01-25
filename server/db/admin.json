@@ -8,7 +8,8 @@
     {
       "personId": 1,
       "email": "mariana@teste",
-      "password": "teste"
+      "password": "teste",
+      "sallonId": 0
     },
     {
       "personId": 2,

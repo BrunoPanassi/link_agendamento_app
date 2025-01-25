@@ -28,7 +28,9 @@ const saveAdmin = async (personId: number, email: string, password: string) => {
 
 const getAdmin = async(email: string, password: string) => {
     try {
-        const response: Response = await $fetch(URI.concat(`?email=${email}&password=${password}`))
+        const response: Response = await $fetch(URI.concat(`?email=${email}&password=${password}`), {
+            method: 'GET'
+        })
         
         if (response.success && response.status == 200)
             return {
@@ -49,4 +51,33 @@ const getAdmin = async(email: string, password: string) => {
     }
 }
 
-export { saveAdmin, getAdmin }
+const updateAdminSaveSallon = async (personId: number, sallonId: number) => {
+    try {
+        const response: Response = await $fetch(URI.concat(`?personId=${personId}`), {
+            method: 'PUT',
+            body: {
+                item: {
+                    sallonId
+                }
+            }
+        })
+        if (response.success && response.status == 200)
+            return {
+                success: true,
+                data: response.data as Admin
+            }
+        if (!response.success && response.status == 400)
+            return {
+                success: false,
+                message: response.message
+            }
+        return null
+    } catch (e) {
+        let message = "Erro no pŕocesso ao atualizar o registro de administrador"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    }
+}
+
+export { saveAdmin, getAdmin, updateAdminSaveSallon }

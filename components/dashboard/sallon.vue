@@ -68,6 +68,8 @@
 import { saveSallon } from '~/services/sallonManager'
 import { useAuth } from '#build/imports'
 import { getSallonByPersonId } from '~/services/sallonManager'
+import type { Sallon } from '~/types/sallon'
+import { updateAdminSaveSallon } from '~/services/adminManager'
 
 const headers = ref([
     { title: 'Nome', value: 'name' },
@@ -75,7 +77,7 @@ const headers = ref([
     { title: 'Ações', value: 'actions' }
 ])
 
-const items = ref()
+const items = ref<Sallon[]>()
 
 const newSallonDialog = ref(false)
 const name = ref("")
@@ -86,7 +88,8 @@ const city = ref("")
 onMounted(async () => {
     const { userId } = useAuth()
     const sallon = await getSallonByPersonId(Number(userId.value));
-    items.value = sallon?.data
+    if (sallon?.data)
+        items.value = sallon?.data as Sallon[]
 })
 
 let required =  [
@@ -96,8 +99,23 @@ let required =  [
     },
 ]
 
-const onRegisterSallon = () => {
-    saveSallon(name.value, description.value, address.value, city.value)
+const onRegisterSallon = async () => {
+    const { userId } = useAuth()
+    let newSallon = null;
+    try {
+        newSallon = await saveSallon(Number(userId.value), name.value, description.value, address.value, city.value)
+    } catch (e) {
+        let message = "Erro no pŕocesso ao salvar um salão"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    } finally {
+        if (newSallon) {
+            const sallonId = newSallon.id //TODO: Mudar para o admin para ter sallons ao inves de sallonId, assim seria admin 1 - N sallon, com isso ao dar update atualizaria o array de sallons
+            updateAdminSaveSallon(Number(userId.value), sallonId)
+            items.value?.push(newSallon)
+        }
+    }
     newSallonDialog.value = false
 }
 

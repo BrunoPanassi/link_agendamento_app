@@ -33,7 +33,7 @@ const loadJsonIfEmailAndPasswordChecks = (email: string, password: string) => {
 
 const getAdminIndexByPersonId = (personId: number) => {
   const adminData = loadJson();
-  const index = adminData.data.findIndex((d) => d.personId === personId);
+  const index = adminData.data.findIndex((d) => d.personId == personId);
   if (index === -1) {
     return { success: false, data: null, message: 'Registro não encontrado' };
   }
@@ -48,11 +48,10 @@ const saveJson = (data: JsonData) => {
 // Define a API para adicionar dados ao JSON
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method
-  const body = await readBody(event);
-  const query = getQuery(event)
   
   switch (method) {
     case 'GET': {
+      const query = getQuery(event)
       const email = query.email as string
       const password = query.password as string
       const jsonData = loadJsonIfEmailAndPasswordChecks(email, password);
@@ -62,6 +61,7 @@ export default defineEventHandler(async (event) => {
     }
 
     case 'POST': {
+      const body = await readBody(event);
       const newItem: Admin = body.item;
 
       if (!newItem) {
@@ -80,11 +80,13 @@ export default defineEventHandler(async (event) => {
     }
 
     case 'PUT': {
+      const query = getQuery(event)
+      const body = await readBody(event);
       const personId = query.personId as number
       const index = getAdminIndexByPersonId(personId)
       if (index.success && index.data) {
         const adminData = loadJson()
-        adminData.data[index.data] = { ...adminData.data[index.data], ...body };
+        adminData.data[index.data] = { ...adminData.data[index.data], ...body.item };
         saveJson(adminData)
         return { status: 200, success: true, data: adminData.data[index.data], message: "Registro de administrador não encontrado"}
       }
@@ -93,6 +95,7 @@ export default defineEventHandler(async (event) => {
 
     case 'DELETE': {
       // Remove um item pelo ID
+      const query = getQuery(event)
       const personId = query.personId as number;
       const adminData = loadJson()
       const adminDataByPersonId = getAdminIndexByPersonId(personId)

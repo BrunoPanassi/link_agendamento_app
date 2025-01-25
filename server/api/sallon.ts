@@ -26,12 +26,12 @@ const loadJsonIfAddressExists = (address: string) => {
     return sallonData
   }
 
-  const loadJsonIfAddressNotExists = (address: string) => {
-    const sallonData = loadJson();
-    if (sallonData.data.some((sallon) => sallon.address != address))
-      return null
-    return sallonData
-  }
+const loadJsonIfAddressNotExists = (address: string) => {
+  const sallonData = loadJson();
+  if (sallonData.data.some((sallon) => sallon.address != address))
+    return null
+  return sallonData
+}
 
 const loadSallonDataById = (sallonId: number) => {
   const sallonData = loadJson();
@@ -41,10 +41,27 @@ const loadSallonDataById = (sallonId: number) => {
   return null
 }
 
+const loadSallonDataByPersonId = (personId: number) => {
+  const sallonData = loadJson();
+  if (sallonData) {
+    return sallonData.data.filter((sallon) => sallon.personId == personId)
+  }
+  return null
+}
+
 // Função para salvar o JSON
 const saveJson = (data: JsonData) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 };
+
+const getLastId = () => {
+  const sallonData = loadJson()
+  if (sallonData.data.length) {
+    const lastId = sallonData.data[sallonData.data.length - 1].id
+    return lastId + 1
+  }
+  return 0
+}
 
 // Define a API para adicionar dados ao JSON
 export default defineEventHandler(async (event) => {
@@ -55,12 +72,20 @@ export default defineEventHandler(async (event) => {
       const query = getQuery(event)
       const address = query.address as string
       const sallonId = query.sallonId as number
-      let jsonData: JsonData|null|Sallon|undefined = null
+      const personId = query.personId as number
+      let jsonData = null;
       if (address) {
         jsonData = loadJsonIfAddressExists(address);
-      } else if (sallonId) {
+      } 
+
+      if (sallonId) {
         jsonData = loadSallonDataById(sallonId)
       }
+
+      if (personId) {
+        jsonData = loadSallonDataByPersonId(personId)
+      }
+
       if (jsonData)
         return { status: 200, success: true, data: jsonData, message: null };
       return { status: 400, success: false, data: null, message: "Salão não encontrado"}
@@ -76,6 +101,7 @@ export default defineEventHandler(async (event) => {
 
       const jsonData = loadJsonIfAddressNotExists(newItem.address);
       if (jsonData) {
+        newItem.id = getLastId()
         jsonData.data.push(newItem);
         saveJson(jsonData);
       } else {

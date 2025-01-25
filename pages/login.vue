@@ -50,6 +50,7 @@ definePageMeta({
 import { getPerson, savePerson } from '~/services/personManager'
 import { getProfessional, saveProfessional } from '~/services/professionalManager'
 import { Role } from '~/types/role'
+import { useAuth } from '~/composables/auth'
 
 const form = ref()
 const router = useRouter()
@@ -70,7 +71,8 @@ let confirmPassword: Ref<string> = ref("")
 let confirmPasswordErrorMessages: Ref<string[]> = ref([])
 
 const pushToDashboardAndAuthSession = (authInfo: string, personId: number) => {
-    sessionStorage.setItem('auth', JSON.stringify({ authInfo, personId }))
+    const { login } = useAuth()
+    login(personId.toString())
     router.push('/dashboard')
 }
 

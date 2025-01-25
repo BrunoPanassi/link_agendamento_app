@@ -3,5 +3,6 @@ export interface Sallon {
     name: string,
     description?: string,
     city: string,
-    address: string
+    address: string,
+    personId: number
 }

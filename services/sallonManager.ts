@@ -3,12 +3,13 @@ import type { Sallon } from "~/types/sallon"
 
 const URI = '/api/sallon'
 
-const saveSallon = async (name: string, description: string, address: string, city: string) => {
+const saveSallon = async (personId: number, name: string, description: string, address: string, city: string) => {
     try {
         const response: Response = await $fetch(URI, {
             method: 'POST',
             body: {
                 item: {
+                    personId,
                     name,
                     description,
                     address,
@@ -57,7 +58,7 @@ const getSallonByPersonId = async (personId: number) => {
         if (response.success && response.status == 200)
             return {
                 success: true,
-                data: response.data as Sallon
+                data: response.data as Sallon[]
             }
         if (!response.success && response.status == 400)
             return {
