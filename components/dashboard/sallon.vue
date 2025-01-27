@@ -99,6 +99,15 @@ let required =  [
     },
 ]
 
+const getSallonsByPersonAndAddTheNewOne = async (userId: number, sallonId: number) => {
+    const sallons = await getSallonByPersonId(userId)
+    let sallonsId: number[] = []
+    if (sallons?.data)
+        sallonsId = sallons?.data?.map((s) => s.id)
+    sallonsId?.push(sallonId)
+    return sallonsId
+}
+
 const onRegisterSallon = async () => {
     const { userId } = useAuth()
     let newSallon = null;
@@ -112,7 +121,8 @@ const onRegisterSallon = async () => {
     } finally {
         if (newSallon) {
             const sallonId = newSallon.id //TODO: Mudar para o admin para ter sallons ao inves de sallonId, assim seria admin 1 - N sallon, com isso ao dar update atualizaria o array de sallons
-            updateAdminSaveSallon(Number(userId.value), sallonId)
+            let sallonsId = await getSallonsByPersonAndAddTheNewOne(Number(userId.value), sallonId)
+            updateAdminSaveSallon(Number(userId.value), sallonsId)
             items.value?.push(newSallon)
         }
     }

@@ -51,13 +51,13 @@ const getAdmin = async(email: string, password: string) => {
     }
 }
 
-const updateAdminSaveSallon = async (personId: number, sallonId: number) => {
+const updateAdminSaveSallon = async (personId: number, sallons: number[]) => {
     try {
         const response: Response = await $fetch(URI.concat(`?personId=${personId}`), {
             method: 'PUT',
             body: {
                 item: {
-                    sallonId
+                    sallons
                 }
             }
         })

@@ -4,5 +4,5 @@ export interface Professional {
     avatar?: string,
     description?: string,
     servicesId?: [number],
-    sallonId?: number
+    sallonId?: [number]
 }
