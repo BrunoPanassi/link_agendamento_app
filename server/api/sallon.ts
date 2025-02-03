@@ -41,6 +41,15 @@ const loadSallonDataById = (sallonId: number) => {
   return null
 }
 
+const getSallonIndexById = (sallonId: number) => {
+  const sallonData = loadJson()
+  const index = sallonData.data.findIndex((s) => s.id == sallonId)
+  if (index === -1) {
+    return { success: false, data: null, message: 'Registro não encontrado' };
+  }
+  return { success: true, data: index, message: 'Registro encontrado' };
+}
+
 const loadSallonDataByPersonId = (personId: number) => {
   const sallonData = loadJson();
   if (sallonData) {
@@ -110,6 +119,37 @@ export default defineEventHandler(async (event) => {
 
       return { success: true, data: newItem };
     }
+
+    case 'PUT': {
+          const query = getQuery(event)
+          const body = await readBody(event);
+          const sallonId = query.sallonId as number
+          const index = getSallonIndexById(sallonId)
+          if (index.success && index.data !== null) {
+            const sallonData = loadJson()
+            sallonData.data[index.data] = { ...sallonData.data[index.data], ...body.item };
+            saveJson(sallonData)
+            return { status: 200, success: false, data: sallonData.data[index.data], message: "Registro de salão atualizado"}
+          }
+          return { status: 400, success: true, data: null, message: "Registro de salão não encontrado"}
+        }
+    
+    case 'DELETE': {
+          // Remove um item pelo ID
+          const query = getQuery(event)
+          const sallonId = query.sallonId as number;
+          const sallonData = loadJson()
+          const sallonDataByPersonId = getSallonIndexById(sallonId)
+          let index = null
+          if (!sallonDataByPersonId.success) {
+            return { success: false, message: 'Registro não encontrado' };
+          } else {
+            index = sallonDataByPersonId.data as number
+          }
+          const deletedItem = sallonData.data.splice(index, 1);
+          saveJson(sallonData);
+          return { success: true, item: deletedItem[0] };
+        }
 
     default:
       throw new Error('Método não suportado');

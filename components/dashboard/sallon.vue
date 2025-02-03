@@ -5,13 +5,13 @@
         :items="items"
         >
             <template v-slot:header.actions="{ column }">
-                <v-btn icon="mdi-plus" variant="tonal" size="small" color="green-darken-4" @click="newSallonDialog = true"></v-btn>
+                <v-btn icon="mdi-plus" variant="tonal" size="small" color="green-darken-4" @click="onNew()"></v-btn>
             </template>
-            <template v-slot:item.actions="{ value }">
-                <v-btn icon="mdi-pencil" variant="text"></v-btn>
+            <template v-slot:item.actions="{ item }">
+                <v-btn icon="mdi-pencil" variant="text" @click="onEdit(item)"></v-btn>
             </template>
         </v-data-table>
-        <v-dialog max-width="500" v-model="newSallonDialog" persistent>
+        <v-dialog max-width="500" v-model="sallonDialog" persistent>
             <template v-slot:default="{ isActive }">
             <v-card class="pa-4">
                 <v-card-title>
@@ -20,7 +20,7 @@
                     Cadastrar Salão
                     </p>
                     <v-spacer></v-spacer>
-                    <v-btn icon="mdi-close" @click="newSallonDialog = !newSallonDialog" size="small" variant="outlined"></v-btn>
+                    <v-btn icon="mdi-close" @click="sallonDialog = !sallonDialog" size="small" variant="outlined"></v-btn>
                 </div>
                 </v-card-title>
                 <v-card-text>
@@ -65,9 +65,8 @@
 </template>
 
 <script setup lang="ts">
-import { saveSallon } from '~/services/sallonManager'
+import { saveSallon, getSallonByPersonId, updateSallonById } from '~/services/sallonManager'
 import { useAuth } from '#build/imports'
-import { getSallonByPersonId } from '~/services/sallonManager'
 import type { Sallon } from '~/types/sallon'
 import { updateAdminSaveSallon } from '~/services/adminManager'
 
@@ -79,18 +78,53 @@ const headers = ref([
 
 const items = ref<Sallon[]>()
 
-const newSallonDialog = ref(false)
+const sallonId = ref();
+const sallonDialog = ref(false)
 const name = ref("")
 const description = ref("")
 const address = ref("")
 const city = ref("")
 
-onMounted(async () => {
-    const { userId } = useAuth()
-    const sallon = await getSallonByPersonId(Number(userId.value));
+const loadData = async(userId: number) => {
+    const sallon = await getSallonByPersonId(userId);
     if (sallon?.data)
         items.value = sallon?.data as Sallon[]
+}
+
+onMounted(async () => {
+    const { userId } = useAuth()
+    loadData(Number(userId.value))
 })
+
+const onFillSallonValues = (item: Sallon) => {
+    sallonId.value = item.id
+    name.value = item.name
+    description.value = item.description ?? ""
+    address.value = item.address
+    city.value = item.city ?? ""
+}
+
+const onEdit = (item: Sallon) => {
+    sallonDialog.value = true
+    onFillSallonValues(item)
+}
+
+const onCleanValues = () => {
+    sallonId.value = null
+    name.value = ""
+    description.value = ""
+    address.value = ""
+    city.value = ""
+}
+
+const onNew = () => {
+    sallonDialog.value = true
+    onCleanValues()
+}
+
+const onClose = () => {
+    sallonDialog.value = false
+}
 
 let required =  [
     (value:string|number) => {
@@ -108,11 +142,10 @@ const getSallonsByPersonAndAddTheNewOne = async (userId: number, sallonId: numbe
     return sallonsId
 }
 
-const onRegisterSallon = async () => {
-    const { userId } = useAuth()
+const onNewSallon = async (userId: number) => {
     let newSallon = null;
     try {
-        newSallon = await saveSallon(Number(userId.value), name.value, description.value, address.value, city.value)
+        newSallon = await saveSallon(userId, name.value, description.value, address.value, city.value)
     } catch (e) {
         let message = "Erro no pŕocesso ao salvar um salão"
         if (e instanceof Error)
@@ -120,13 +153,43 @@ const onRegisterSallon = async () => {
         throw new Error(message)
     } finally {
         if (newSallon) {
-            const sallonId = newSallon.id //TODO: Mudar para o admin para ter sallons ao inves de sallonId, assim seria admin 1 - N sallon, com isso ao dar update atualizaria o array de sallons
-            let sallonsId = await getSallonsByPersonAndAddTheNewOne(Number(userId.value), sallonId)
-            updateAdminSaveSallon(Number(userId.value), sallonsId)
-            items.value?.push(newSallon)
+            const sallonId = newSallon.id
+            let sallonsId = await getSallonsByPersonAndAddTheNewOne(userId, sallonId)
+            updateAdminSaveSallon(userId, sallonsId)
+            items.value?.push(newSallon) //TODO: Verificar se somente o loadData ja resolveria
         }
     }
-    newSallonDialog.value = false
+}
+
+const onEditSallon = async (userId: number) => {
+    const sallon: Sallon = {
+        id: sallonId.value,
+        name: name.value,
+        description: description.value,
+        address: address.value,
+        city: city.value,
+        personId: userId
+    }
+    try { 
+        await updateSallonById(sallonId.value, sallon)
+    } catch (e) {
+        let message = "Erro no pŕocesso ao salvar um salão"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    } finally {
+        loadData(userId)
+    }
+}
+
+const onRegisterSallon = async () => {
+    const { userId } = useAuth()
+    if (sallonId.value !== null) {
+        onEditSallon(Number(userId.value))
+    } else {
+        onNewSallon(Number(userId.value))
+    }
+    onClose()
 }
 
 </script>

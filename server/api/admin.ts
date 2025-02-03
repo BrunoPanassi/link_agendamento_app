@@ -88,9 +88,9 @@ export default defineEventHandler(async (event) => {
         const adminData = loadJson()
         adminData.data[index.data] = { ...adminData.data[index.data], ...body.item };
         saveJson(adminData)
-        return { status: 200, success: true, data: adminData.data[index.data], message: "Registro de administrador não encontrado"}
+        return { status: 200, success: false, data: adminData.data[index.data], message: "Registro de administrador atualizado"}
       }
-      return { status: 400, success: false, data: null, message: "Registro de administrador atualizado"}
+      return { status: 400, success: true, data: null, message: "Registro de administrador não encontrado"}
     }
 
     case 'DELETE': {

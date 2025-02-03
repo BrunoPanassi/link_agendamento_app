@@ -74,4 +74,59 @@ const getSallonByPersonId = async (personId: number) => {
     }
 }
 
-export { saveSallon, getSallonByName, getSallonByPersonId }
+const updateSallonById = async (sallonId: number, sallon: Sallon) => {
+    try {
+        const response: Response = await $fetch(URI.concat(`?sallonId=${sallonId}`), {
+            method: 'PUT',
+            body: {
+                item: {
+                    ...sallon
+                }
+            }
+        })
+
+        if (response.success && response.status == 200)
+            return {
+                success: true,
+                data: response.data as Sallon
+            }
+        if (!response.success && response.status == 400)
+            return {
+                success: false,
+                message: response.message
+            }
+        return null
+    } catch (e) {
+        let message = "Erro no pŕocesso ao buscar os dados de um salão"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    }
+}
+
+const deleteSallonById = async (sallonId: number) => {
+    try {
+        const response: Response = await $fetch(URI.concat(`?sallonId=${sallonId}`), {
+            method:'DELETE'
+        })
+
+        if (response.success && response.status == 200)
+            return {
+                success: true,
+                data: response.data as Sallon
+            }
+        if (!response.success && response.status == 400)
+            return {
+                success: false,
+                message: response.message
+            }
+        return null 
+    } catch (e) {
+        let message = "Erro no pŕocesso ao deletar o dado de um salão"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    }
+}
+
+export { saveSallon, getSallonByName, getSallonByPersonId, updateSallonById, deleteSallonById }
