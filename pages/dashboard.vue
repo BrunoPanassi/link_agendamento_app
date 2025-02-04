@@ -75,6 +75,7 @@ const menuSelectedTitle = computed(() => menu.find(v => v.value == menuSelected.
 
 const onSelectItem = (value: string) => {
     menuSelected.value = value
+    drawer.value = false
 }
 
 </script>

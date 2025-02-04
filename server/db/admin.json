@@ -9,7 +9,11 @@
       "personId": 1,
       "email": "mariana@teste",
       "password": "teste",
-      "sallonId": 0
+      "sallonId": 0,
+      "sallons": [
+        0,
+        0
+      ]
     },
     {
       "personId": 2,
