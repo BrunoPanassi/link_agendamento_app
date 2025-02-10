@@ -1,14 +1,14 @@
 import { defineEventHandler, readBody } from 'h3';
 import fs from 'fs';
 import path from 'path';
-import { Admin } from '~/types/admin';
+import { Service } from '~/types/service';
 
 interface JsonData {
-  data: Admin[];
+  data: Service[];
 }
 
 // Caminho para o arquivo JSON
-const filePath = path.join(process.cwd(), 'server/db/admin.json');
+const filePath = path.join(process.cwd(), 'server/db/service.json');
 
 // Função para carregar o JSON
 const loadJson = (): JsonData => {
@@ -19,26 +19,26 @@ const loadJson = (): JsonData => {
   return JSON.parse(fileContent) as JsonData;
 };
 
-const loadJsonIfEmailDoNotExists = (email: string) => {
-    const adminData = loadJson();
-    if (adminData.data.some((admin) => admin.email == email))
+const loadJsonIfTitleDoNotExists = (title: string) => {
+    const data = loadJson();
+    if (data.data.some((service) => service.title == title))
       return null
-    return adminData
+    return data
   }
 
-const loadDataByPersonId = (personId: number) => {
+const loadJsonByTitle = (title: string) => {
+    const data = loadJson();
+    return data.data.filter((s) => s.title == title)
+}
+
+const loadJsonByIds = (ids: number[]) => {
+    const data = loadJson()
+    return data.data.filter((s) => ids.includes(s.id))
+}
+
+const getIndexById = (id: number) => {
   const data = loadJson();
-  return data.data.find((a) => a.personId = personId)
-}
-
-const loadJsonIfEmailAndPasswordChecks = (email: string, password: string) => {
-  const adminData = loadJson();
-  return adminData.data.find(a => a.email == email && a.password == password)
-}
-
-const getAdminIndexByPersonId = (personId: number) => {
-  const adminData = loadJson();
-  const index = adminData.data.findIndex((d) => d.personId == personId);
+  const index = data.data.findIndex((d) => d.id == id);
   if (index === -1) {
     return { success: false, data: null, message: 'Registro não encontrado' };
   }
@@ -50,6 +50,15 @@ const saveJson = (data: JsonData) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 };
 
+const getLastId = () => {
+    const data = loadJson()
+    if (data.data.length) {
+      const lastId = data.data[data.data.length - 1].id
+      return lastId + 1
+    }
+    return 1
+  }
+
 // Define a API para adicionar dados ao JSON
 export default defineEventHandler(async (event) => {
   const method = event.node.req.method
@@ -57,16 +66,14 @@ export default defineEventHandler(async (event) => {
   switch (method) {
     case 'GET': {
       const query = getQuery(event)
-      const email = query.email as string
-      const password = query.password as string
-      const personId = query.personId as number
-      let jsonData: any = []
-      if (email && password)
-        jsonData = loadJsonIfEmailAndPasswordChecks(email, password);
+      const title = query.title as string
+      const ids = query.ids as number[]
 
-      if (personId)
-          jsonData = loadDataByPersonId(personId)
-      
+      let jsonData: Service[] = [];
+      if (title)
+        jsonData = loadJsonByTitle(title);
+      if (ids)
+        jsonData = loadJsonByIds(ids)
       if (jsonData)
         return { status: 200, success: true, data: jsonData, message: null };
       return { status: 400, success: false, data: null, message: "Usuário não encontrado"}
@@ -74,14 +81,15 @@ export default defineEventHandler(async (event) => {
 
     case 'POST': {
       const body = await readBody(event);
-      const newItem: Admin = body.item;
+      const newItem: Service = body.item;
 
       if (!newItem) {
         throw new Error('Nenhum item fornecido');
       }
 
-      const jsonData = loadJsonIfEmailDoNotExists(newItem.email);
+      const jsonData = loadJsonIfTitleDoNotExists(newItem.title);
       if (jsonData) {
+        newItem.id = getLastId()
         jsonData.data.push(newItem);
         saveJson(jsonData);
       } else {
@@ -94,13 +102,13 @@ export default defineEventHandler(async (event) => {
     case 'PUT': {
       const query = getQuery(event)
       const body = await readBody(event);
-      const personId = query.personId as number
-      const index = getAdminIndexByPersonId(personId)
+      const id = query.id as number
+      const index = getIndexById(id)
       if (index.success && index.data) {
-        const adminData = loadJson()
-        adminData.data[index.data] = { ...adminData.data[index.data], ...body.item };
-        saveJson(adminData)
-        return { status: 200, success: false, data: adminData.data[index.data], message: "Registro de administrador atualizado"}
+        const data = loadJson()
+        data.data[index.data] = { ...data.data[index.data], ...body.item };
+        saveJson(data)
+        return { status: 200, success: false, data: data.data[index.data], message: "Registro de administrador atualizado"}
       }
       return { status: 400, success: true, data: null, message: "Registro de administrador não encontrado"}
     }
@@ -108,17 +116,17 @@ export default defineEventHandler(async (event) => {
     case 'DELETE': {
       // Remove um item pelo ID
       const query = getQuery(event)
-      const personId = query.personId as number;
-      const adminData = loadJson()
-      const adminDataByPersonId = getAdminIndexByPersonId(personId)
+      const id = query.id as number;
+      const data = loadJson()
+      const dataById = getIndexById(id)
       let index = null
-      if (!adminDataByPersonId.success) {
+      if (!dataById.success) {
         return { success: false, message: 'Registro não encontrado' };
       } else {
-        index = adminDataByPersonId.data as number
+        index = dataById.data as number
       }
-      const deletedItem = adminData.data.splice(index, 1);
-      saveJson(adminData);
+      const deletedItem = data.data.splice(index, 1);
+      saveJson(data);
       return { success: true, item: deletedItem[0] };
     }
 

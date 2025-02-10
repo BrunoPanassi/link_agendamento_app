@@ -6,7 +6,17 @@
       "description": "Salão de Beleza ìntima",
       "address": "Avenida da Saudade",
       "city": "Araçatuba - SP",
-      "id": 0
+      "id": 1,
+      "services": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        5
+      ]
     }
   ]
 }

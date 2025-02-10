@@ -69,7 +69,7 @@ const getLastId = () => {
     const lastId = sallonData.data[sallonData.data.length - 1].id
     return lastId + 1
   }
-  return 0
+  return 1
 }
 
 // Define a API para adicionar dados ao JSON
@@ -129,9 +129,9 @@ export default defineEventHandler(async (event) => {
             const sallonData = loadJson()
             sallonData.data[index.data] = { ...sallonData.data[index.data], ...body.item };
             saveJson(sallonData)
-            return { status: 200, success: false, data: sallonData.data[index.data], message: "Registro de salão atualizado"}
+            return { status: 200, success: true, data: sallonData.data[index.data], message: "Registro de salão atualizado"}
           }
-          return { status: 400, success: true, data: null, message: "Registro de salão não encontrado"}
+          return { status: 400, success: false, data: null, message: "Registro de salão não encontrado"}
         }
     
     case 'DELETE': {

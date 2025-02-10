@@ -37,7 +37,7 @@ const getLastId = () => {
     const lastId = personData.data[personData.data.length - 1].id
     return lastId + 1
   }
-  return 0
+  return 1
 }
 
 // Função para salvar o JSON

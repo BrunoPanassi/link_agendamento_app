@@ -5,7 +5,8 @@
         :items="items"
         >
             <template v-slot:header.actions="{ column }">
-                <v-btn icon="mdi-plus" variant="tonal" size="small" color="green-darken-4" @click="onNew()"></v-btn>
+                <v-btn icon="mdi-plus" variant="tonal" size="small" color="green-darken-4" 
+                    @click="onNew()"></v-btn>
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-btn icon="mdi-pencil" variant="text" @click="onEdit(item)"></v-btn>

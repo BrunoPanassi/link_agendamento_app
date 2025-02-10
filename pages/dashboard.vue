@@ -31,10 +31,10 @@
                 </v-list>
             </v-navigation-drawer>
 
-            <v-main style="height: 500px;">
+            <v-main>
                 <v-card-text>
-                    <services v-show="menuSelected == 'services'"></services>
-                    <sallon v-show="menuSelected == 'sallon'"></sallon>
+                    <services v-if="menuSelected == 'services'"></services>
+                    <sallon v-if="menuSelected == 'sallon'"></sallon>
                 </v-card-text>
             </v-main>
         </v-layout>

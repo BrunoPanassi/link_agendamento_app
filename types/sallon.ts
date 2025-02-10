@@ -5,5 +5,6 @@ export interface Sallon {
     city: string,
     address: string,
     personId: number,
-    professionals?: [number]
+    services?: number[]
+    professionals?: number[]
 }

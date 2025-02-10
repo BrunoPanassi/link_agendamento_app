@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "title": "Depilação Íntima",
+      "description": "depilação",
+      "time": "60",
+      "image": "",
+      "price": "120",
+      "id": 1
+    },
+    {
+      "title": "Limpeza de Pele",
+      "description": "limpeza",
+      "time": "40",
+      "image": "",
+      "price": "30",
+      "id": 2
+    },
+    {
+      "title": "Tratamento de Pele",
+      "description": "tratamento",
+      "time": "120",
+      "image": "",
+      "price": "250",
+      "id": 3
+    },
+    {
+      "title": "Depliação Básica",
+      "description": "depliação",
+      "time": "30",
+      "image": "",
+      "price": "40",
+      "id": 4
+    },
+    {
+      "title": "Cílios",
+      "description": "aplicação",
+      "time": "120",
+      "image": "",
+      "price": "150",
+      "id": 6
+    }
+  ]
+}
