@@ -1,8 +1,8 @@
 import { defineEventHandler, readBody } from 'h3';
 import fs from 'fs';
 import path from 'path';
-import { json } from 'stream/consumers';
 import { Professional } from '~/types/professional';
+import { getPersonByIds } from '~/services/personManager';
 
 interface JsonData {
   data: Professional[];
@@ -19,6 +19,25 @@ const loadJson = (): JsonData => {
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   return JSON.parse(fileContent) as JsonData;
 };
+
+const loadJsonByIds = async (ids: number[]) => {
+  const data = loadJson()
+  const personData = await getPersonByIds(ids)
+  let professionals;
+  if (personData?.data && data) {
+    professionals = data.data
+    .filter(p => ids.includes(p.personId))
+    .map(p => {
+      const person = personData.data.find(person => person.id == p.personId)
+      return {
+        ...p,
+        name: person?.name ?? "",
+        phoneNumber: person?.phoneNumber ?? ""
+      }
+    })
+  }
+  return professionals
+}
 
 const loadJsonByPersonIdAndPassword = (personId: number, password: string) => {
     const professionalData = loadJson()
@@ -42,11 +61,20 @@ export default defineEventHandler(async (event) => {
   switch (method) {
     case 'GET': {
       const query = getQuery(event)
+      let jsonData;
       const personId = query.personId as number
       const password = query.password as string
-      const jsonData = loadJsonByPersonIdAndPassword(personId, password)
+      if (personId && password) {
+        jsonData = loadJsonByPersonIdAndPassword(personId, password)
+      }
+
+      const ids = query.ids as number[]
+      if (ids) {
+        jsonData = loadJsonByIds(ids)
+      }
+
       if (jsonData)
-          return { status: 200, success: true, data: { personId }, message: null };
+          return { status: 200, success: true, data: jsonData, message: null };
       return { status: 400, success: false, data: null, message: "Profissional não encontrado"}
     }
 

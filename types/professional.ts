@@ -3,6 +3,6 @@ export interface Professional {
     password: string,
     avatar?: string,
     description?: string,
-    servicesId?: [number],
-    sallonId?: [number]
+    servicesId?: number[],
+    sallonId?: number[]
 }

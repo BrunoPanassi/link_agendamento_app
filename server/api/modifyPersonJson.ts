@@ -19,6 +19,11 @@ const loadPersonData = (): JsonData => {
   return JSON.parse(fileContent) as JsonData;
 };
 
+const loadDataByIds = (ids: number[]) => {
+  const data = loadPersonData()
+  return data.data.filter(p => ids.includes(p.id))
+}
+
 const loadJsonIfPhoneNumberDoNotExists = (phoneNumber: number) => {
   const personData = loadPersonData();
   if (personData.data.some((person) => person.phoneNumber == phoneNumber))
@@ -53,9 +58,17 @@ export default defineEventHandler(async (event) => {
     case 'GET': {
       const query = getQuery(event)
       const phoneNumber = query.phoneNumber as number
-      const jsonData = loadJsonByPhoneNumber(phoneNumber)
+      let jsonData;
+      if (phoneNumber) {
+        jsonData = loadJsonByPhoneNumber(phoneNumber)
+      }
+
+      const ids  = query.ids as number[]
+      if (ids) {
+        jsonData = loadDataByIds(ids)
+      }
       if (jsonData)
-        return { status: 200, success: true, data: {phoneNumber, id: jsonData.id}, message: null };
+        return { status: 200, success: true, data: jsonData, message: null };
       return { status: 400, success: false, data: null, message: "Usuário não encontrado"} //TODO: Improve status code response to 400
     }
 

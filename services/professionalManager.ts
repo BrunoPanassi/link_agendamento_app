@@ -46,4 +46,27 @@ const getProfessional = async (personId: number, password: string) => {
     }
 }
 
-export { saveProfessional, getProfessional }
+const getProfessionalByIds = async (ids: number[]) => {
+    try {
+        const response: Response = await $fetch(URI.concat(`?ids=${ids}`))
+
+        if (response.success && response.status == 200)
+            return {
+                success: true,
+                data: response.data as Professional[]
+            }
+        if (!response.success && response.status == 400)
+            return {
+                success: false,
+                message: response.message
+            }
+        return null
+    } catch (e) {
+        let message = "Erro no pŕocesso ao buscar uma informação sobre profissionais"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    }
+}
+
+export { saveProfessional, getProfessional, getProfessionalByIds }

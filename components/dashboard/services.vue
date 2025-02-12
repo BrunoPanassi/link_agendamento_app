@@ -11,8 +11,8 @@
         @update:model-value="onSelectSallon()"
     ></v-select>
     <v-data-table
-    :headers="headers"
-    :items="items"
+        :headers="headers"
+        :items="items"
     >
         <template v-slot:header.actions="{ column }">
             <v-btn icon="mdi-plus" variant="tonal" size="small" color="green-darken-4"
@@ -146,12 +146,6 @@ onMounted(async () => {
     loadData(Number(userId.value))
 })
 
-const onDelete = (item: Service) => {
-    serviceId.value = item.id
-    title.value = item.title
-    deleteDialog.value = true
-}
-
 const onConfirmDelete = async () => {
     await deleteServiceById(serviceId.value)
     if (sallonSelected.value?.id) {
@@ -210,6 +204,12 @@ const onFillValues = (item: Service) => {
 const onEdit = (item: Service) => {
     dialog.value = true
     onFillValues(item)
+}
+
+const onDelete = (item: Service) => {
+    serviceId.value = item.id
+    title.value = item.title
+    deleteDialog.value = true
 }
 
 const onClose = () => {

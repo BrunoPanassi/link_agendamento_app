@@ -62,6 +62,10 @@ const menu = [
           value: 'services',
         },
         {
+          title: 'Profissionais',
+          value: 'professionals',
+        },
+        {
           title: 'Horários',
           value: 'hours',
         },

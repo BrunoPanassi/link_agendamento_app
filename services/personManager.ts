@@ -48,4 +48,27 @@ const getPerson = async (phoneNumber: string) => {
     }
 }
 
-export { savePerson, getPerson }
+const getPersonByIds = async (ids: number[]) => {
+    try {
+        const response: Response = await $fetch(URI.concat(`?ids=${ids}`))
+
+        if (response.success && response.status == 200)
+            return {
+                success: true,
+                data: response.data as Person[]
+            }
+        if (!response.success && response.status == 400)
+            return {
+                success: false,
+                message: response.message
+            }
+        return null
+    } catch (e) {
+        let message = "Erro no pŕocesso ao buscar o data de uma pessoa"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    }
+}
+
+export { savePerson, getPerson, getPersonByIds }
