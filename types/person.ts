@@ -4,5 +4,5 @@ export interface Person {
     id: number,
     name: string,
     phoneNumber: number,
-    roles: [Role]
+    roles: Role[]
 }

@@ -1,4 +1,4 @@
-import type { Professional } from "~/types/professional";
+import type { ProfessionalPerson, Professional } from "~/types/professional";
 import type { Response } from "~/types/response";
 
 const URI = '/api/professional'
@@ -53,7 +53,7 @@ const getProfessionalByIds = async (ids: number[]) => {
         if (response.success && response.status == 200)
             return {
                 success: true,
-                data: response.data as Professional[]
+                data: response.data as ProfessionalPerson[]
             }
         if (!response.success && response.status == 400)
             return {
