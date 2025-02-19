@@ -25,28 +25,36 @@ const saveJson = (data: JsonData) => {
 };
 
 const loadDataBySallon = (sallonId: number) => {
-    const data = loadJson();
-    if (data) {
-      return data.data.find((invite) => invite.sallonId == sallonId)
-    }
+  const data = loadJson();
+  if (data) {
+    return data.data.find((invite) => invite.sallonId == sallonId)
+  }
+  return null
+}
+
+const loadDataByProfessional = (professionalId: number) => {
+  const data = loadJson();
+  if (data) {
+    return data.data.find((invite) => invite.professionalIds.includes(professionalId))
+  }
+  return null
+}
+
+const loadJsonIfSallonNotExists = (sallonId: number) => {
+  const data = loadJson();
+  if (data.data.some((invite) => invite.sallonId != sallonId))
     return null
-  }
+  return data
+}
 
-  const loadJsonIfSallonNotExists = (sallonId: number) => {
-    const data = loadJson();
-    if (data.data.some((invite) => invite.sallonId != sallonId))
-      return null
-    return data
+const getIndexById = (sallonId: number) => {
+  const invite = loadJson()
+  const index = invite.data.findIndex((s) => s.sallonId == sallonId)
+  if (index === -1) {
+    return { success: false, data: null, message: 'Registro não encontrado' };
   }
-
-  const getIndexById = (sallonId: number) => {
-    const invite = loadJson()
-    const index = invite.data.findIndex((s) => s.sallonId == sallonId)
-    if (index === -1) {
-      return { success: false, data: null, message: 'Registro não encontrado' };
-    }
-    return { success: true, data: index, message: 'Registro encontrado' };
-  }
+  return { success: true, data: index, message: 'Registro encontrado' };
+}
 
   export default defineEventHandler(async (event) => {
     const method = event.node.req.method
@@ -55,9 +63,15 @@ const loadDataBySallon = (sallonId: number) => {
       case 'GET': {
         const query = getQuery(event)
         const sallonId = query.sallonId as number
+        
         let jsonData = null;
         if (sallonId) {
           jsonData = loadDataBySallon(sallonId);
+        }
+
+        const professionalId = query.professionalId as number
+        if (professionalId) {
+          jsonData = loadDataByProfessional(professionalId)
         }
   
         if (jsonData)

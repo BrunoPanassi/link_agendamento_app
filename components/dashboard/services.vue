@@ -82,7 +82,7 @@
             <v-card-title>
                 <div class="mb-2 ml-2 d-flex">
                     <p class="pt-2 font-weight-bold text-body-1 text-wrap">
-                    Deletar Salão
+                    Deletar Serviço
                     </p>
                     <v-spacer></v-spacer>
                     <v-btn icon="mdi-close" @click="onCancelDelete" size="small" variant="outlined"></v-btn>

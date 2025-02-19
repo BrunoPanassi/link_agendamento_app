@@ -35,6 +35,7 @@
                 <v-card-text>
                     <services v-if="menuSelected == 'services'"></services>
                     <sallon v-if="menuSelected == 'sallon'"></sallon>
+                    <professional v-if="menuSelected == 'professionals'"></professional>
                 </v-card-text>
             </v-main>
         </v-layout>
@@ -47,6 +48,7 @@ definePageMeta({
 })
 import services from '~/components/dashboard/services.vue';
 import sallon from '~/components/dashboard/sallon.vue';
+import professional from '~/components/dashboard/professional.vue';
 
 const drawer = ref(false)
 
