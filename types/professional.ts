@@ -8,6 +8,7 @@ export interface Professional {
 }
 
 export interface ProfessionalPerson {
+    id: number,
     name: string,
     phoneNumber: string,
     avatar?: string,

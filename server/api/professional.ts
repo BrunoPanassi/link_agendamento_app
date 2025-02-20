@@ -31,6 +31,7 @@ const loadJsonByIds = async (ids: number[]) => {
       const person = personData.data.find(person => person.id == p.personId)
       return {
         ...p,
+        id: person?.id,
         name: person?.name ?? "",
         phoneNumber: person?.phoneNumber ?? ""
       }

@@ -38,12 +38,14 @@
                 <v-card-text>
                     <v-form 
                         v-if="!newPerson"
-                        @submit.prevent>
+                        @submit.prevent
+                        ref="professionalForm"
+                    >
                         <v-select
                             v-model="inviteSelected"
                             :items="invites"
                             item-title="name"
-                            item-value="phoneNumber"
+                            item-value="id"
                             label="Profissionais"
                             persistent-hint
                             return-object
@@ -61,6 +63,40 @@
                                 </v-btn>
                             </template>
                         </v-select>
+                        <v-btn
+                            block
+                            color="green"
+                            append-icon="mdi-check-circle"
+                        >
+                            Salvar
+                        </v-btn>
+                    </v-form>
+                    <v-form
+                        v-else
+                        @submit.prevent
+                        ref="personForm"
+                    >
+                        <p>
+                            <v-btn 
+                                class="mb-2"
+                                icon="mdi-arrow-left"
+                                variant="text"
+                                @click="newPerson = false"
+                            >
+                            </v-btn>
+                        </p>
+                        <v-text-field 
+                        label="Nome"
+                        v-model="name"
+                        required 
+                        :rules="required">
+                        </v-text-field>
+                        <v-text-field 
+                        label="Contato"
+                        v-model="phoneNumber"
+                        required
+                        :rules="required"
+                        ></v-text-field>
                         <v-text-field 
                         label="Senha"
                         v-model="password"
@@ -85,30 +121,14 @@
                             chips
                             closable-chips
                         ></v-select>
-                    </v-form>
-                    <v-form
-                        v-else
-                        @submit.prevent
-                    >
-                        <p>
-                            <v-btn 
-                                icon="mdi-arrow-left"
-                                @click="newPerson = false"
-                            >
-                            </v-btn>
-                        </p>
-                        <v-text-field 
-                        label="Nome"
-                        v-model="name"
-                        required 
-                        :rules="required">
-                        </v-text-field>
-                        <v-text-field 
-                        label="Contato"
-                        v-model="phoneNumber"
-                        required
-                        :rules="required"
-                        ></v-text-field>
+                        <v-btn
+                            block
+                            color="green"
+                            append-icon="mdi-check-circle"
+                            @click="registerProfessional()"
+                        >
+                            Salvar
+                        </v-btn>
                     </v-form>
                 </v-card-text>
             </v-card>
@@ -117,9 +137,9 @@
 </template>
 
 <script setup lang="ts">
-import { getProfessionalByIds } from '~/services/professionalManager';
+import { getProfessionalByIds, saveProfessional } from '~/services/professionalManager';
 import { getSallonByPersonId } from '~/services/sallonManager';
-import { getBySallon } from '~/services/sallonInviteManager';
+import { create, getBySallon } from '~/services/sallonInviteManager';
 import { useAuth } from '#build/imports'
 import type { Person } from '~/types/person';
 import type { ProfessionalPerson, Professional } from '~/types/professional';
@@ -127,6 +147,8 @@ import type { Sallon } from '~/types/sallon';
 import type { SallonInvite } from '~/types/sallonInvite';
 import type { Service } from '~/types/service';
 import { getServiceByIds } from '~/services/serviceManager';
+import { savePerson } from '~/services/personManager';
+import { Role } from '~/types/role';
 
 let required =  [
     (value:string|number) => {
@@ -158,7 +180,6 @@ const onSelectSallon = async () => {
 
 const newPerson = ref(false);
 const services = ref<Service[]>()
-const serviceIdsSelected = ref<number[]>()
 
 const loadProfessionals = async (ids: number[] = []) => {
     if (!ids.length && sallonSelected.value?.professionals) {
@@ -193,12 +214,12 @@ let invites = <Ref<ProfessionalPerson[]>>ref()
 let inviteSelected = <Ref<ProfessionalPerson>>ref()
 let id = <Ref<Number>>ref()
 let person = <Ref<Person>>ref()
-let name = <Ref<String>>ref()
-let phoneNumber = <Ref<String>>ref()
-
-let avatar = <Ref<String>>ref()
-let description = <Ref<String>>ref()
-let password = <Ref<String>>ref()
+let name = <Ref<string>>ref()
+let phoneNumber = <Ref<number>>ref()
+let password = <Ref<string>>ref()
+let avatar = <Ref<string>>ref()
+let description = <Ref<string>>ref()
+const serviceIdsSelected = ref<number[]>()
 
 const onNew = async () => {
     dialog.value = true
@@ -222,6 +243,44 @@ const onDelete = (item: ProfessionalPerson) => {
 }
 
 const onSelectInvite = () => {
+
+}
+
+const createPerson = (name:string, phoneNumber:number, role:Role = Role.professional) => {
+    return savePerson(name, phoneNumber, role);
+}
+
+const createProfessional = (person: Person) => {
+    if (sallonSelected.value) {
+        const professional: Professional = {
+            personId: person.id,
+            password: password.value,
+            avatar: avatar.value,
+            description: description.value,
+            servicesId: serviceIdsSelected.value,
+            sallonId: [sallonSelected.value.id]
+        }
+        return saveProfessional(professional);
+    }
+    return null
+}
+
+const sendSallonInvite = (professionalId: number) => {
+    if (sallonSelected.value) {
+        const invite: SallonInvite = {
+            sallonId: sallonSelected.value.id,
+            professionalIds: [professionalId]
+        }
+        return create(invite);
+    }
+}
+
+const registerProfessional = async () => {
+    const newPerson = await createPerson(name.value, phoneNumber.value)
+    if (newPerson?.id) {
+        await createProfessional(newPerson)
+        await sendSallonInvite(newPerson.id) //TODO: Check if dosnt have sallon created on invite
+    }
 
 }
 
