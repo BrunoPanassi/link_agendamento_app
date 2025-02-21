@@ -87,7 +87,7 @@ const getIndexById = (sallonId: number) => {
           throw new Error('Nenhum item fornecido');
         }
   
-        const jsonData = loadJsonIfSallonNotExists(newItem.sallonId);
+        const jsonData = loadJsonIfSallonNotExists(newItem.sallonId); //TODO: if sallon exists, then add the professional
         if (jsonData) {
           jsonData.data.push(newItem);
           saveJson(jsonData);

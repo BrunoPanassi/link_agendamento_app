@@ -23,6 +23,12 @@
       "phoneNumber": "3123123",
       "roles": "PROFESSIONAL",
       "id": 3
+    },
+    {
+      "name": "Bruno",
+      "phoneNumber": "9823918391283",
+      "roles": "PROFESSIONAL",
+      "id": 4
     }
   ]
 }

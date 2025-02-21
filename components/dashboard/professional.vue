@@ -187,7 +187,7 @@ const loadProfessionals = async (ids: number[] = []) => {
     }
     if (ids) {
         const professionalByIds = await getProfessionalByIds(ids)
-        if (professionalByIds?.data) {
+        if (professionalByIds?.data != null) {
             items.value = professionalByIds.data
         }
     }
@@ -227,7 +227,7 @@ const onNew = async () => {
         const response = await getBySallon(sallonSelected.value.id)
         if (response?.success && response.data) {
             const professionalsResponse = await getProfessionalByIds(response.data.professionalIds)
-            if (professionalsResponse?.success && professionalsResponse.data) {
+            if (professionalsResponse?.success && professionalsResponse.data?.length) {
                 invites.value = professionalsResponse.data
             }
         }

@@ -16,7 +16,7 @@ const create = async (invite: SallonInvite) => {
             return response.data as SallonInvite
         return null
     } catch (e) {
-        let message = "Erro no pŕocesso ao enviar um convite."
+        let message = "Erro no processo ao enviar um convite."
         if (e instanceof Error)
             message = e.message
         throw new Error(message)

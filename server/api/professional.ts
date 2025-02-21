@@ -69,9 +69,10 @@ export default defineEventHandler(async (event) => {
         jsonData = loadJsonByPersonIdAndPassword(personId, password)
       }
 
-      const ids = query.ids as number[]
+      let ids = query.ids as number[]
       if (ids) {
-        jsonData = loadJsonByIds(ids)
+        ids = Array.isArray(query.ids) ? query.ids.map(Number) : [Number(query.ids)];
+        jsonData = await loadJsonByIds(ids)
       }
 
       if (jsonData)

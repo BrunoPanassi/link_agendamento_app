@@ -49,7 +49,6 @@ const getProfessional = async (personId: number, password: string) => {
 const getProfessionalByIds = async (ids: number[]) => {
     try {
         const response: Response = await $fetch(URI.concat(`?ids=${ids}`))
-
         if (response.success && response.status == 200)
             return {
                 success: true,
