@@ -29,7 +29,7 @@ const update = async (sallonId: number, professionalIds: number[]) => {
             method: 'PUT',
             body: {
                 item: {
-                    ...professionalIds
+                    professionalIds: professionalIds
                 }
             }
         })

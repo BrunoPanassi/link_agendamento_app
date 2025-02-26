@@ -50,7 +50,12 @@ const getPerson = async (phoneNumber: string) => {
 
 const getPersonByIds = async (ids: number[]) => {
     try {
-        const response: Response = await $fetch(URI.concat(`?ids=${ids}`))
+        const response: Response = await $fetch(URI, {
+            method: 'GET',
+            params: {
+                ids: ids
+            }
+        })
         if (response.success && response.status == 200)
             return {
                 success: true,

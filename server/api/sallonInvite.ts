@@ -104,10 +104,14 @@ const getIndexById = (sallonId: number) => {
             const sallonId = query.sallonId as number
             const index = getIndexById(sallonId)
             if (index.success && index.data !== null) {
-              const invite = loadJson()
-              invite.data[index.data] = { ...invite.data[index.data], ...body.item };
-              saveJson(invite)
-              return { status: 200, success: true, data: invite.data[index.data], message: "Registro de salão atualizado"}
+              let invite = loadJson()
+              let sallonInvite = invite.data.find(i => i.sallonId == sallonId)
+              if (sallonInvite) {
+                sallonInvite["professionalIds"] = [...body.item.professionalIds ]
+                invite.data[index.data] = sallonInvite;
+                saveJson(invite)
+                return { status: 200, success: true, data: invite.data[index.data], message: "Registro de salão atualizado"}
+              }
             }
             return { status: 400, success: false, data: null, message: "Registro de salão não encontrado"}
           }

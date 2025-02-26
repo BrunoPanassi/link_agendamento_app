@@ -139,7 +139,7 @@
 <script setup lang="ts">
 import { getProfessionalByIds, saveProfessional } from '~/services/professionalManager';
 import { getSallonByPersonId } from '~/services/sallonManager';
-import { create, getBySallon } from '~/services/sallonInviteManager';
+import { create, getBySallon, update } from '~/services/sallonInviteManager';
 import { useAuth } from '#build/imports'
 import type { Person } from '~/types/person';
 import type { ProfessionalPerson, Professional } from '~/types/professional';
@@ -221,16 +221,20 @@ let avatar = <Ref<string>>ref()
 let description = <Ref<string>>ref()
 const serviceIdsSelected = ref<number[]>()
 
-const onNew = async () => {
-    dialog.value = true
-    if (sallonSelected.value?.id) {
-        const response = await getBySallon(sallonSelected.value.id)
+const getSallonInviteProfessionals = async (sallonId: number) => {
+    const response = await getBySallon(sallonId)
         if (response?.success && response.data) {
             const professionalsResponse = await getProfessionalByIds(response.data.professionalIds)
             if (professionalsResponse?.success && professionalsResponse.data?.length) {
                 invites.value = professionalsResponse.data
             }
         }
+}
+
+const onNew = async () => {
+    dialog.value = true
+    if (sallonSelected.value?.id) {
+        getSallonInviteProfessionals(sallonSelected.value.id)
     }
 }
 
@@ -266,22 +270,27 @@ const createProfessional = (person: Person) => {
 }
 
 const sendSallonInvite = (professionalId: number) => {
-    if (sallonSelected.value) {
+    if (sallonSelected.value && !invites.value) {
         const invite: SallonInvite = {
             sallonId: sallonSelected.value.id,
             professionalIds: [professionalId]
         }
         return create(invite);
     }
+    if (sallonSelected.value && invites.value) {
+        const professionalIds = invites.value.map(i => i.id).concat(professionalId)
+        return update(sallonSelected.value.id, professionalIds)
+    }
 }
 
 const registerProfessional = async () => {
-    const newPerson = await createPerson(name.value, phoneNumber.value)
-    if (newPerson?.id) {
-        await createProfessional(newPerson)
-        await sendSallonInvite(newPerson.id) //TODO: Check if dosnt have sallon created on invite
+    const personCreated = await createPerson(name.value, phoneNumber.value)
+    if (personCreated?.id) {
+        await createProfessional(personCreated)
+        await sendSallonInvite(personCreated.id) //TODO: Check if dosnt have sallon created on invite
+        if (sallonSelected.value) getSallonInviteProfessionals(sallonSelected.value.id)
     }
-
+    newPerson.value = false
 }
 
 </script>
