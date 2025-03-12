@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Corte",
+    "description": "corte de cabelo",
+    "time": 60,
+    "price": "49,90",
+    "id": 1
+  },
+  {
+    "title": "Barba",
+    "description": "fazer a barba",
+    "time": 30,
+    "price": "29,90",
+    "id": 2
+  },
+  {
+    "title": "Sobrancelha",
+    "description": "fazer a sobrancelha",
+    "time": 120,
+    "price": "79,90",
+    "id": 3
+  }
+]

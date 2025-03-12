@@ -67,6 +67,8 @@
                             block
                             color="green"
                             append-icon="mdi-check-circle"
+                            :disabled="!addProfessionalEnabled"
+                            @click="addProfessionalOnSallon()"
                         >
                             Salvar
                         </v-btn>
@@ -138,8 +140,8 @@
 
 <script setup lang="ts">
 import { getProfessionalByIds, saveProfessional } from '~/services/professionalManager';
-import { getSallonByPersonId } from '~/services/sallonManager';
-import { create, getBySallon, update } from '~/services/sallonInviteManager';
+import { getIfProfessionalIsOnThisSallon, getSallonByPersonId, updateSallonById } from '~/services/sallonManager';
+import { create, getBySallon, remove, update } from '~/services/sallonInviteManager';
 import { useAuth } from '#build/imports'
 import type { Person } from '~/types/person';
 import type { ProfessionalPerson, Professional } from '~/types/professional';
@@ -168,9 +170,13 @@ const loadData = async(userId: number) => {
         sallons.value = sallon?.data as Sallon[]
 }
 
-onMounted(async () => {
+const beforeLoadData = () => {
     const { userId } = useAuth()
     loadData(Number(userId.value))
+}
+
+onMounted(() => {
+    beforeLoadData()
 })
 
 const onSelectSallon = async () => {
@@ -246,8 +252,33 @@ const onDelete = (item: ProfessionalPerson) => {
 
 }
 
-const onSelectInvite = () => {
+let addProfessionalEnabled = ref(false)
+const addProfessionalOnSallon = async () => {
+    if (addProfessionalEnabled.value
+            && sallonSelected.value
+            && inviteSelected.value.id) {
+        let sallon = sallonSelected.value;
+        if (!sallon.professionals) sallon.professionals = []
+        sallon.professionals.push(inviteSelected.value.id);
 
+        await remove(sallon.id, inviteSelected.value.id)
+        await updateSallonById(sallon.id, sallon)
+
+        addProfessionalEnabled.value = false
+        dialog.value = false
+
+        beforeLoadData()
+    }
+}
+
+const onSelectInvite = async () => {
+    const professionalId: number = inviteSelected.value.id;
+    if (sallonSelected.value) {
+        const thereIsProfessionalOnSallon = await getIfProfessionalIsOnThisSallon(professionalId, sallonSelected.value.id)
+        if (!thereIsProfessionalOnSallon?.data) {
+            addProfessionalEnabled.value = true;
+        }
+    }
 }
 
 const createPerson = (name:string, phoneNumber:number, role:Role = Role.professional) => {

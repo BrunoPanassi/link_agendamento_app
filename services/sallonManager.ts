@@ -74,6 +74,29 @@ const getSallonByPersonId = async (personId: number) => {
     }
 }
 
+const getIfProfessionalIsOnThisSallon = async (professionalId: number, sallonId: number) => {
+    try {
+        const response: Response = await $fetch(URI.concat(`?professionalId=${professionalId}&sallonId=${sallonId}`))
+
+        if (response.success && response.status == 200)
+            return {
+                success: true,
+                data: response.data as boolean
+            }
+        if (!response.success && response.status == 400)
+            return {
+                success: false,
+                message: response.message
+            }
+        return null
+    } catch (e) {
+        let message = "Erro no pŕocesso ao buscar os dados de um salão"
+        if (e instanceof Error)
+            message = e.message
+        throw new Error(message)
+    }
+}
+
 const updateSallonById = async (sallonId: number, sallon: Sallon) => {
     try {
         const response: Response = await $fetch(URI.concat(`?sallonId=${sallonId}`), {
@@ -129,4 +152,4 @@ const deleteSallonById = async (sallonId: number) => {
     }
 }
 
-export { saveSallon, getSallonByName, getSallonByPersonId, updateSallonById, deleteSallonById }
+export { saveSallon, getSallonByName, getSallonByPersonId, updateSallonById, deleteSallonById, getIfProfessionalIsOnThisSallon }

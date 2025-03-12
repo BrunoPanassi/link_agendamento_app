@@ -120,12 +120,29 @@ const getIndexById = (sallonId: number) => {
             // Remove um item pelo ID
             const query = getQuery(event)
             const sallonId = query.sallonId as number;
+            const professionalId = query.professionalId as number;
             const index = getIndexById(sallonId)
             if (index.success && index.data !== null) {
                 const invite = loadJson()
-                const deletedItem = invite.data.splice(index.data, 1);
-                saveJson(invite);
-                return { status: 200, success: true, data: deletedItem[0], message: "Registro de salão atualizado"}
+
+                let deletedProfessional;
+                let deletedItem;
+                let error;
+                if (professionalId) {
+                  const professionalIds = invite.data[index.data].professionalIds
+                  if (professionalIds.length) {
+                    const professionalIndex = professionalIds.findIndex(p => p === professionalId)
+                    if (professionalIndex) deletedProfessional = invite.data[index.data].professionalIds.splice(professionalIndex, 1)
+                    else error = "Profissional não encontrado"
+                  }
+                } else {
+                  deletedItem = invite.data.splice(index.data, 1);
+                }
+                if (!error) {
+                  saveJson(invite);
+                  return { status: 200, success: true, data: deletedItem ?? deletedProfessional, message: "Registro de salão atualizado"}
+                }
+                return { status: 500, success: false, data: null, message: error}
               }
             return { success: false, item: null, message: "Registro de salão não encontrado" };
           }

@@ -99,9 +99,12 @@ const getByProfessional = async (professionalId: number) => {
     }
 }
 
-const remove = async (sallonId: number) => {
+const remove = async (sallonId: number, professionalId: number) => {
     try {
-        const response: Response = await $fetch(URI.concat(`?sallonId=${sallonId}`), {
+        let params;
+        if (professionalId) params = `?sallonId=${sallonId}&professionalId=${professionalId}`
+        else params = `?sallonId=${sallonId}`
+        const response: Response = await $fetch(URI.concat(params), {
             method:'DELETE'
         })
 

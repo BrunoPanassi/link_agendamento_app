@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Bruno Henrique",
+    "phoneNumber": 34234234,
+    "role": "professional",
+    "email": "bruno@teste",
+    "password": "teste123",
+    "description": "corte e barba",
+    "id": 1,
+    "serviceIds": [
+      1,
+      2
+    ]
+  },
+  {
+    "name": "Mariana Rodrigues",
+    "phoneNumber": 49302984392,
+    "role": "professional",
+    "email": "mariana@teste",
+    "password": "teste123",
+    "description": "sobrancelhas",
+    "serviceIds": [
+      3
+    ],
+    "id": 2
+  }
+]
