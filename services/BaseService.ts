@@ -31,7 +31,7 @@ export class BaseService<T> {
         return this.repository.update(id, data);
     }
 
-    async delete(id: string): Promise<void> {
-        await this.repository.delete(id);
+    async delete(id: string): Promise<string> {
+        return this.repository.delete(id);
     }
 }

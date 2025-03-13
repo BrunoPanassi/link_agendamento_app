@@ -3,6 +3,7 @@ import { BaseService } from "./BaseService";
 import { ProfessionalRepository } from "~/repositories/professional/ProfessionalRepository";
 import type { Professional } from "~/types/professional";
 import type { Hour } from "~/types/hour";
+import { Role } from "~/types/role";
 
 const professionalRepository: IProfessionalRepository = ProfessionalRepository
 
@@ -18,7 +19,7 @@ export class ProfessionalService extends BaseService<Professional> {
         throw new Error('Profissional não encontrado');
       }
   
-      if (professional.role !== 'professional') {
+      if (professional.role !== Role.professional) {
         throw new Error('Pessoa não é um profissional');
       }
 

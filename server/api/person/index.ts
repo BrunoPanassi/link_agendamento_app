@@ -1,17 +1,16 @@
-import { ProfessionalService } from "~/services/ProfessionalService";
+import { Person } from "~/types/person";
 import { BaseApiHandler } from "../BaseApiHandler";
-import { Professional } from "~/types/professional";
+import { PersonService } from "~/services/PersonService";
 import { H3Event } from 'h3';
 import { Role } from "~/types/role";
 
-const service = new ProfessionalService();
+const service = new PersonService()
 
-class ProfessionalApiHandler extends BaseApiHandler<Professional> {
+class PersonApiHandler extends BaseApiHandler<Person> {
     async find(event: H3Event) {
-        const email = getQuery(event).email as string
-        const password = getQuery(event).password as string
-        if (email && password) {
-            return service.doesProfessionalHasAccount(email, password)
+        const phoneNumber = getQuery(event).phoneNumber as number
+        if (phoneNumber) {
+          return service.findByPhoneNumber(phoneNumber)
         }
         const ids = getQuery(event).ids as string[]
         if (ids) {
@@ -27,7 +26,7 @@ class ProfessionalApiHandler extends BaseApiHandler<Professional> {
     async create(event: H3Event) {
       const body = await readBody(event);
       if (!body?.id) body.id = await service.getLastId();
-      body.role = Role.professional
+      body.role = Role.user
       return service.create(body);
     }
   
@@ -42,6 +41,6 @@ class ProfessionalApiHandler extends BaseApiHandler<Professional> {
     }
   }
   
-  const handler = new ProfessionalApiHandler();
+  const handler = new PersonApiHandler();
   
   export default defineEventHandler((event) => handler.handle(event));

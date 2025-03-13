@@ -4,7 +4,7 @@ export abstract class BaseApiHandler<T> {
   abstract find(event: H3Event): Promise<T | T[] | null | undefined>;
   abstract create(event: H3Event): Promise<T>
   abstract update(event: H3Event): Promise<T | null>;
-  abstract delete(event: H3Event): Promise<void>;
+  abstract delete(event: H3Event): Promise<string>;
 
   async handle(event: H3Event) {
     switch (event.method) {
