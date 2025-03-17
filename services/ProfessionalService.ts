@@ -36,10 +36,11 @@ export class ProfessionalService extends BaseService<Professional> {
       return professional;
     }
 
-    async updateProfessionalSallons(professionalId: string, sallonIds: string[]): Promise<Professional> {
+    async updateProfessionalSallons(professionalId: string, sallonId: string): Promise<Professional> {
       const professional = await this.getProfessional(professionalId);
   
-      professional.sallonIds = sallonIds;
+      if (professional.sallonIds) professional.sallonIds.push(sallonId);
+      else professional.sallonIds = [sallonId]
   
       await this.update(professionalId, professional);
   

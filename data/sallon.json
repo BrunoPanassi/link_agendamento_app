@@ -1,3 +1,9 @@
 [
-    
+  {
+    "name": "Estetica",
+    "description": "Focado em beleza pessoal",
+    "city": "Araçatuba",
+    "addres": "Avenida Saudade 338 Bairro Centro",
+    "id": 1
+  }
 ]

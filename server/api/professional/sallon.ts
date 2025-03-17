@@ -7,8 +7,8 @@ export default defineEventHandler(async (event) => {
     const method = event.node.req.method
 
     if (method == 'PATCH') {
-        const { id, sallonIds } = body;
-        return await service.updateProfessionalSallons(id, sallonIds);
+        const { id, sallonId } = body;
+        return await service.updateProfessionalSallons(id, sallonId);
     }
 
     throw createError({ statusCode: 405, statusMessage: 'Method Not Allowed' });

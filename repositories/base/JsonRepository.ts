@@ -55,11 +55,15 @@ export abstract class JsonRepository<T> implements IRepository<T> {
       return data[index];
     }
   
-    async delete(id: string): Promise<string> {
+    async delete(id: string): Promise<string | null> {
       let data = await this.readData();
-      data = data.filter((item: any) => item.id !== id);
-      this.writeData(data);
-      return id;
+      if (id) {
+        const indexToRemove = data.findIndex((item: any) => item.id == id);
+        data.splice(indexToRemove, 1)
+        this.writeData(data);
+        return id;
+      }
+      return null
     }
   }
   

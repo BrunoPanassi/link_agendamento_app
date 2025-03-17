@@ -10,6 +10,9 @@
     "serviceIds": [
       1,
       2
+    ],
+    "sallonIds": [
+      1
     ]
   },
   {

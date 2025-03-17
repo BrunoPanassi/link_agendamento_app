@@ -12,7 +12,15 @@ export abstract class BaseApiHandler<T> {
         return this.find(event);
 
       case 'POST':
-        return this.create(event);
+        try {
+          return await this.create(event);
+        } catch (e) {
+          const messageError: Error = e as Error
+          throw createError({
+              statusCode: 400,
+              statusMessage: messageError.message,
+            })
+        }
 
       case 'PATCH':
         return this.update(event);

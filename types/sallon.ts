@@ -6,5 +6,5 @@ export interface Sallon {
     description?: string,
     city: string,
     address: string,
-    hours: Hour[]
+    hours?: Hour[]
 }

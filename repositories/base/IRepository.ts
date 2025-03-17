@@ -6,5 +6,5 @@ export interface IRepository<T> {
     getLastId(): Promise<number>;
     create(entity: T): Promise<T>;
     update(id: string, entity: Partial<T>): Promise<T | null>;
-    delete(id: string): Promise<string>;
+    delete(id: string): Promise<string | null>;
   }  
