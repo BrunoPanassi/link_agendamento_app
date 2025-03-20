@@ -1,3 +1,20 @@
 [
-    
+  {
+    "name": "Ronaldo",
+    "phoneNumber": 89283492834,
+    "id": 1,
+    "role": "user"
+  },
+  {
+    "name": "Hisalana",
+    "phoneNumber": 8885498120,
+    "id": 2,
+    "role": "user"
+  },
+  {
+    "name": "Rainha Elisabeth",
+    "phoneNumber": 9090192718263,
+    "id": 3,
+    "role": "user"
+  }
 ]

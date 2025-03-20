@@ -1,3 +1,38 @@
 [
-    
+  {
+    "userId": 1,
+    "professionalId": 2,
+    "sallonId": 1,
+    "serviceId": 2,
+    "date": "2025-03-20",
+    "hour": "14:00",
+    "id": 1
+  },
+  {
+    "userId": 2,
+    "professionalId": 1,
+    "sallonId": 1,
+    "serviceId": 1,
+    "date": "2025-03-20",
+    "hour": "15:00",
+    "id": 2
+  },
+  {
+    "userId": 3,
+    "professionalId": 1,
+    "sallonId": 1,
+    "serviceId": 1,
+    "date": "2025-03-20",
+    "hour": "16:00",
+    "id": 3
+  },
+  {
+    "userId": 3,
+    "professionalId": 2,
+    "sallonId": 1,
+    "serviceId": 2,
+    "date": "2025-03-20",
+    "hour": "17:00",
+    "id": 4
+  }
 ]

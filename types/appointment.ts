@@ -1,10 +1,9 @@
-import type { Professional } from '~/types/professional';
-import type { Service } from './service';
-
 export interface Appointment {
-    professional: Professional| undefined,
-    service: Service,
-    date: Date | undefined,
-    hour: string | undefined,
-    clientPhoneNumber: string | undefined
+    id: number;
+    userId: number;
+    professionalId: number;
+    sallonId: number;
+    serviceId: number;
+    date: string; // yyyy-mm-dd
+    hour: string; // HH:mm
 }
