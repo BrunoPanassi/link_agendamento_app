@@ -34,5 +34,14 @@
     "date": "2025-03-20",
     "hour": "17:00",
     "id": 4
+  },
+  {
+    "userId": 2,
+    "professionalId": 2,
+    "sallonId": 1,
+    "serviceId": 2,
+    "date": "2025-03-20",
+    "hour": "18:00",
+    "id": 5
   }
 ]
