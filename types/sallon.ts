@@ -1,4 +1,5 @@
 import type { Hour } from "./hour";
+import type { Service } from "./service";
 
 export interface Sallon {
     id: number,
@@ -6,5 +7,7 @@ export interface Sallon {
     description?: string,
     city: string,
     address: string,
-    hours?: Hour[]
+    hours?: Hour[],
+    image?: string,
+    services?: Service[]
 }

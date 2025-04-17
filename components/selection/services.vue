@@ -5,10 +5,10 @@
           <span class="font-weight-bold" >Agendados</span>
           <div class="ml-4" >
             <p>
-              {{ `${appointment.service.title} com ${appointment.professional}` }}
+              {{ `${appointment.serviceId} com ${appointment.professionalId}` }}
             </p>
             <p> 
-              {{ `${appointment.date.getDate()}/${appointment.date.getMonth()}/${appointment.date.getFullYear()} às ${appointment.hour}` }}
+              {{ `${appointment.date}} às ${appointment.hour}` }}
             </p>
           </div>
         </div>
@@ -95,19 +95,21 @@ import type { Appointment } from '~/types/appointment';
 const serviceDialog: Ref<boolean> = ref(false);
 const services: Ref<Service[]> = ref([])
 const serviceSelected: Ref<Service> = ref({
-  title: "",
-  description: "",
-  time: "",
-  image: "",
-  price: ""
+  id: 0,
+  title: '',
+  description: '',
+  time: 0,
+  price: ''
 });
 
 const appointment: Ref<Appointment> = ref({
-  professional: undefined,
-  service: serviceSelected.value,
-  date: undefined,
-  hour: undefined,
-  clientPhoneNumber: undefined
+  id: 0,
+  userId: 0,
+  professionalId: 0,
+  sallonId: 0,
+  serviceId: 0,
+  date: "",
+  hour: ""
 })
 
 const onSelectService = (service: Service) => {
@@ -119,28 +121,4 @@ const onSelectAppointment = (selectedAppointment: Appointment) => {
   appointment.value = selectedAppointment
   serviceDialog.value = false
 }
-
-services.value = [
-        {
-          title: 'Depilação Axilas',
-          description: `Feito com cera da sua escolha`,
-          time: '45 min',
-          image: 'https://t4.ftcdn.net/jpg/03/63/21/07/360_F_363210701_pZbhVqPPRBxJVOizpqYixWZSwC52KNkz.jpg',
-          price: '87,90 R$'
-        },
-        {
-          title: 'Depilação Completa',
-          description: 'Profissionais que cuidam da sua pele',
-          time: '60 min',
-          image: 'https://www.shutterstock.com/image-photo/master-applies-pink-depilatory-wax-260nw-1795300762.jpg',
-          price: '117,52 R$'
-        },
-        {
-          title: 'Sobrancelha',
-          description: 'O seu olhar mais impactante',
-          time: '20 min',
-          image: 'https://st4.depositphotos.com/12982378/27435/i/450/depositphotos_274358440-stock-photo-cropped-view-young-woman-styling.jpg',
-          price: '67,60 R$'
-        },
-      ]
 </script>

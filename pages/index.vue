@@ -1,7 +1,7 @@
 <template>
     <v-card class="mx-auto" max-width="400">
       <v-card-title>
-        <Sallon />
+        <Sallon :id="id" />
       </v-card-title>
   
       <v-card-text>
@@ -52,6 +52,10 @@
   <script setup lang="ts">
   import Services from '../components/selection/services.vue';
   import Sallon from '../components/info/sallon.vue';
+  import { useRoute } from 'vue-router'
+
+  const route = useRoute()
+  const id = route.query.id // Pegamos o ID da query string
   
   const userDialog = ref(false);
   
