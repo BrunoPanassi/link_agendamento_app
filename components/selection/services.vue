@@ -8,7 +8,7 @@
               {{ `${appointment.serviceId} com ${appointment.professionalId}` }}
             </p>
             <p> 
-              {{ `${appointment.date}} às ${appointment.hour}` }}
+              {{ `${appointment.date} às ${appointment.hour}` }}
             </p>
           </div>
         </div>

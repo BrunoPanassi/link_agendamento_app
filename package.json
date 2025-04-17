@@ -12,7 +12,9 @@
   "dependencies": {
     "@nuxt/types": "^2.18.1",
     "@nuxt/typescript-build": "^3.0.2",
+    "@pinia/nuxt": "0.11.0",
     "nuxt": "^3.14.1592",
+    "pinia": "^3.0.2",
     "vue": "latest",
     "vue-router": "latest",
     "vuetify-nuxt-module": "^0.18.3"
