@@ -1,7 +1,7 @@
 <template>
     <v-card class="mx-auto" max-width="400">
       <v-card-title>
-        <Sallon :id="id" />
+        <Sallon />
       </v-card-title>
   
       <v-card-text>
@@ -53,9 +53,26 @@
   import Services from '../components/selection/services.vue';
   import Sallon from '../components/info/sallon.vue';
   import { useRoute } from 'vue-router'
+  import { useSallonStore } from '@/stores/sallon';
+import { createPinia } from 'pinia';
 
   const route = useRoute()
-  const id = route.query.id // Pegamos o ID da query string
+  const id = computed<number | null>(() => {
+    const rawId = route.query.id
+
+    if (typeof rawId === 'string') {
+      const parsed = Number(rawId)
+      return isNaN(parsed) ? null : parsed
+    }
+
+    return null
+  }) // Pegamos o ID da query string
+
+  const pinia = createPinia()
+  const sallonStore = useSallonStore(pinia)
+  if (id.value) {
+    await sallonStore.fetchSallon(id.value)
+  }
   
   const userDialog = ref(false);
   
