@@ -21,5 +21,13 @@ export const useSallonStore = defineStore('sallon', {
         unset() {
             this.sallon = {} as Sallon
         }
+    },
+    getters: {
+        get(): Sallon {
+            return this.sallon
+        },
+        services(): number[] {
+            return this.sallon.serviceIds ?? []
+        }
     }
 })

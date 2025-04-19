@@ -9,5 +9,5 @@ export interface Sallon {
     address: string,
     hours?: Hour[],
     image?: string,
-    services?: Service[]
+    serviceIds?: number[]
 }

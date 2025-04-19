@@ -112,6 +112,17 @@ const appointment: Ref<Appointment> = ref({
   hour: ""
 })
 
+const props = defineProps<{ids: number[]}>()
+
+const fetchServices = async() => {
+  const { data } = await useFetch<Service[]>(`/api/service/?ids=${props.ids}`, {
+    watch: [() => props.ids]
+  })
+  if (data.value) services.value = data.value
+}
+
+fetchServices()
+
 const onSelectService = (service: Service) => {
   serviceSelected.value = service
   serviceDialog.value = true;

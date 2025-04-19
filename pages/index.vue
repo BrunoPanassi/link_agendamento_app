@@ -5,7 +5,7 @@
       </v-card-title>
   
       <v-card-text>
-        <Services />
+        <Services :ids="sallonStore.services"/>
       </v-card-text>
   
       <v-dialog max-width="500" v-model="userDialog" persistent>
@@ -54,7 +54,7 @@
   import Sallon from '../components/info/sallon.vue';
   import { useRoute } from 'vue-router'
   import { useSallonStore } from '@/stores/sallon';
-import { createPinia } from 'pinia';
+  import { createPinia } from 'pinia';
 
   const route = useRoute()
   const id = computed<number | null>(() => {

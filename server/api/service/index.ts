@@ -7,6 +7,10 @@ const service = new ServiceService();
 
 class ServiceApiHandler extends BaseApiHandler<Service> {
     async find(event: H3Event) {
+      const ids = getQuery(event).ids as string[]
+        if (ids) {
+            return service.findByIds(ids);
+        }
         const id = getQuery(event).id as string
         if (id) {
             return service.findById(id);
@@ -16,7 +20,7 @@ class ServiceApiHandler extends BaseApiHandler<Service> {
 
     async create(event: H3Event) {
       const body = await readBody(event);
-      if (!body?.id) body.id = await service.getLastId();
+      body.id ??= await service.getLastId();
       return service.create(body);
     }
   

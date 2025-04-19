@@ -5,6 +5,7 @@
     "city": "Araçatuba",
     "addres": "Avenida Saudade 338 Bairro Centro",
     "image": "https://images.pexels.com/photos/705255/pexels-photo-705255.jpeg",
+    "serviceIds": [4, 5, 6],
     "id": 1
   }
 ]
